@@ -2,56 +2,68 @@ package com.example.passwordtingting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.EventListener;
+import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String FILE_NAME = "checkfile.txt";
+    private static final String FILE_NAME = "checkfile7.txt";
 
+    String pin;
     EditText input;
     Button button;
-    String pin;
-    Intent password_getter = new Intent(this, passwordGetter.class);
-    Intent make_pin = new Intent(this, makePassword.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        input = findViewById(R.id.input);
-        button = findViewById(R.id.button);
+        Intent password_getter = new Intent(this, passwordGetter.class);
+        Intent make_pin = new Intent(this, makePassword.class);
+
+        FileInputStream fis;
 
         try {
-            pin = check_for_file();
-        } catch (FileNotFoundException e) {
+            fis = openFileInput(FILE_NAME);
 
+            pin = get_input_from_file(fis);
+
+            fis.close();
+        } catch (FileNotFoundException e) {
+            Log.d("Bruh", "Den fandtes ikke dafuq?");
             startActivity(make_pin);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        setContentView(R.layout.activity_main);
+
+        input = findViewById(R.id.input);
+        button = findViewById(R.id.button);
+
+
+        TextView temp = findViewById(R.id.textView2);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (pin.equals(input.getText().toString())) {
+                temp.setText(pin);
 
-                    startActivity(password_getter);
+                if (1==1) {
+                    //
 
                 } else {
 
@@ -65,18 +77,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
-    private String check_for_file() throws IOException {
 
-        FileInputStream fis = openFileInput(FILE_NAME);
+    private String get_input_from_file(FileInputStream fis) throws IOException {
 
-        String fis_content = String.valueOf(fis.read());
+        InputStreamReader isr = new InputStreamReader(fis);
 
-        return fis_content;
+        BufferedReader br = new BufferedReader(isr);
+
+        StringBuilder sb = new StringBuilder();
+
+        String text;
+
+        while ((text=br.readLine()) != null) {
+
+            sb.append(text);
+
+        }
+
+        return sb.toString();
 
     }
-
 
 }
