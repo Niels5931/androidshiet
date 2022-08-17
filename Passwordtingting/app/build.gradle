@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 27
 
     defaultConfig {
         applicationId "com.example.passwordtingting"
         minSdk 27
-        targetSdk 30
+        targetSdk 27
         versionCode 1
         versionName "1.0"
 

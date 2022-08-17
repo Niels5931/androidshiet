@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.EventListener;
 
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     Button button;
     String pin;
     Intent password_getter = new Intent(this, passwordGetter.class);
+    Intent make_pin = new Intent(this, makePassword.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
         try {
             pin = check_for_file();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+
+            startActivity(make_pin);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,6 +52,13 @@ public class MainActivity extends AppCompatActivity {
                 if (pin.equals(input.getText().toString())) {
 
                     startActivity(password_getter);
+
+                } else {
+
+                    Toast error = Toast.makeText(getApplicationContext(),"Kode findes ikke", Toast.LENGTH_LONG);
+                    error.show();
+
+                    input.setText("");
 
                 }
 
