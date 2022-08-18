@@ -1,17 +1,14 @@
 package com.example.passwordtingting;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,15 +17,16 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String FILE_NAME = "checkfile7.txt";
+    private static final String FILE_NAME = "pin.txt";
 
     String pin;
-    EditText input;
     Button button;
+    EditText input;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         Intent password_getter = new Intent(this, passwordGetter.class);
         Intent make_pin = new Intent(this, makePassword.class);
@@ -42,28 +40,23 @@ public class MainActivity extends AppCompatActivity {
 
             fis.close();
         } catch (FileNotFoundException e) {
-            Log.d("Bruh", "Den fandtes ikke dafuq?");
+
             startActivity(make_pin);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setContentView(R.layout.activity_main);
 
         input = findViewById(R.id.input);
         button = findViewById(R.id.button);
-
-
-        TextView temp = findViewById(R.id.textView2);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                temp.setText(pin);
+                if (pin.equals(input.getText().toString())) {
 
-                if (1==1) {
-                    //
+                    startActivity(password_getter);
 
                 } else {
 
@@ -78,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 
     private String get_input_from_file(FileInputStream fis) throws IOException {
 
