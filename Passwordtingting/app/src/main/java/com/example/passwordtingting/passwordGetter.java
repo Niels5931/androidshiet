@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -44,6 +45,7 @@ public class passwordGetter extends AppCompatActivity {
         EditText ny_side = findViewById(R.id.ny_side);
         EditText ny_kode = findViewById(R.id.ny_kode);
         Button ny_ting = findViewById(R.id.tilføj_ny);
+        Button skift_kode = findViewById(R.id.Skift);
 
         ArrayList<TextView> view_list = new ArrayList<>();
 
@@ -86,6 +88,21 @@ public class passwordGetter extends AppCompatActivity {
             }
         });
 
+        skift_kode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                skift_kode(ny_side,ny_kode);
+                ny_side.setText("");
+                ny_kode.setText("");
+                try {
+                    load_shit_fra_fil();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                update_scroll_view(view_list);
+            }
+        });
+
         ny_side.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -95,6 +112,17 @@ public class passwordGetter extends AppCompatActivity {
 
                     liste.setVisibility(View.INVISIBLE);
 
+                }
+            }
+        });
+
+        ny_kode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
+                    liste.setVisibility(View.VISIBLE);
+                } else {
+                    liste.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -178,7 +206,7 @@ public class passwordGetter extends AppCompatActivity {
 
         list.clear();
 
-        for (String navn:navne) {
+        for (int i = 0; i < navne.toArray().length; i++) {
 
             temp = new TextView(this);
 
@@ -186,14 +214,15 @@ public class passwordGetter extends AppCompatActivity {
 
             temp.offsetTopAndBottom(10);
 
-            temp.setText(navn);
+            temp.setText(navne.get(i));
 
             temp.setClickable(true);
 
+            int finalI = i;
             temp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    t.setText(navn);
+                    t.setText(koder.get(finalI));
                 }
             });
 
@@ -219,4 +248,44 @@ public class passwordGetter extends AppCompatActivity {
         }
 
     }
+
+    private void skift_kode(EditText navn, EditText ny_kode) {
+
+        koder.set(navne.indexOf(navn.getText().toString()), ny_kode.getText().toString());
+
+        File file = new File(getFilesDir(),FILE_NAME);
+
+        String to_write = null;
+
+        if (file.delete()) {
+
+            try {
+                fos = openFileOutput(FILE_NAME,MODE_PRIVATE);
+
+                for (int i = 0; i < navne.toArray().length; i++) {
+
+                    to_write = navne.get(i) + "-" + koder.get(i) + "\n";
+
+                    try {
+                        fos.write(to_write.getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                fos.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
+
+
+
+    }
+
 }
